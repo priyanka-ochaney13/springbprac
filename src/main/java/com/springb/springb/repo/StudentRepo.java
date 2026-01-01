@@ -1,8 +1,8 @@
 package com.springb.springb.repo;
 
-import java.util.ArrayList;
+import java.sql.ResultSet;
 import java.util.List;
-
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,7 +28,15 @@ public class StudentRepo {
     }
     
     public List<Student> findAll() {
-        List<Student> students = new ArrayList<>();
-        return students;
+        String sql = "select * from student";
+        
+        RowMapper<Student> rowMapper = (ResultSet rs, int rowNum) -> {
+            Student st = new Student();
+            st.setRollNumber(rs.getInt("roll_no"));
+            st.setName(rs.getString("name"));
+            st.setAge(rs.getInt("age"));
+            return st;
+        };
+        return jdbc.query(sql, rowMapper);
     }
 }
